@@ -6,7 +6,7 @@ const ApiService = axios.create({
 
 ApiService.interceptors.request.use(function (config) {
     return new Promise((resolve) => {
-        config.baseURL = 'https://localhost:7292';
+        config.baseURL = 'http://localhost:5129';
         resolve(config);
     });
 });
