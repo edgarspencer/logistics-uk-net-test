@@ -11,4 +11,6 @@ public class DriverResponse
     public string FullName => $"{Forename} {Surname}";
 
     public List<DriverShiftResponse> Shifts { get; set; } = new List<DriverShiftResponse>();
+
+    public List<DayStatus> DayStatuses { get; set; } = new List<DayStatus>();
 }
