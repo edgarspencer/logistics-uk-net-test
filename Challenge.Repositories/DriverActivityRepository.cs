@@ -24,7 +24,18 @@ public class DriverActivityRepository : IDriverActivityRepository
             return activities;
         }
 
-        activities = (await _sqlProvider.QueryData<DriverActivity>("dbo.stp_Get_Driver_Activity")).ToList();
+        var sql = @"
+            SELECT
+                D.Driver_ID,
+                D.Surname,
+                D.Forename,
+                DT.Activity_Start_Date,
+                DT.Activity_End_Date,
+                DT.Vehicle_Registration,
+                DT.Activity_Type
+            FROM Driver D
+            INNER JOIN Driver_Trace DT ON D.Driver_ID = DT.Driver_ID";
+        activities = (await _sqlProvider.QueryData<DriverActivity>(sql)).ToList();
         _cache.Set(_cacheKey, activities, TimeSpan.FromHours(1));
 
         return activities;

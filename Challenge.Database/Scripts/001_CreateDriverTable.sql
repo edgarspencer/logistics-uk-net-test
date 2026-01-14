@@ -1,6 +1,6 @@
-CREATE TABLE [dbo].[Driver]
+CREATE TABLE Driver
 (
-    [Driver_ID] INT NOT NULL PRIMARY KEY,
-    [Surname] NVARCHAR(50) NOT NULL,
-    [Forename] NVARCHAR(50) NOT NULL
+    Driver_ID INT NOT NULL PRIMARY KEY,
+    Surname VARCHAR(50) NOT NULL,
+    Forename VARCHAR(50) NOT NULL
 );

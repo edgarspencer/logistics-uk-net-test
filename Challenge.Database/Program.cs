@@ -15,10 +15,10 @@ var connectionString = configuration.GetConnectionString("DefaultConnection")
 
 Console.WriteLine("Starting database migration...");
 
-EnsureDatabase.For.SqlDatabase(connectionString);
+EnsureDatabase.For.MySqlDatabase(connectionString);
 
 var upgrader = DeployChanges.To
-    .SqlDatabase(connectionString)
+    .MySqlDatabase(connectionString)
     .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
     .LogToConsole()
     .Build();

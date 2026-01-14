@@ -1,6 +1,6 @@
-﻿using Dapper;
+using Dapper;
 using System.Data;
-using Microsoft.Data.SqlClient;
+using MySqlConnector;
 
 namespace SqlInterface;
 
@@ -16,22 +16,20 @@ public class SqlProvider : ISqlProvider
         DefaultTypeMap.MatchNamesWithUnderscores = true;
     }
 
-    public async Task<IEnumerable<TReturnedDataModel>> QueryData<TReturnedDataModel>(string storedProcedure)
+    public async Task<IEnumerable<TReturnedDataModel>> QueryData<TReturnedDataModel>(string sql)
     {
-        using var connection = new SqlConnection(_connectionString);
-        return await connection.QueryAsync<TReturnedDataModel>(storedProcedure, new { }, commandType: CommandType.StoredProcedure, commandTimeout: _commandTimeout);
+        using var connection = new MySqlConnection(_connectionString);
+        return await connection.QueryAsync<TReturnedDataModel>(sql, commandTimeout: _commandTimeout);
     }
 
     public async Task QueryMultipleDataSets(
-        string storedProcedure,
+        string sql,
         Action<SqlMapper.GridReader> callback)
     {
-        using var connection = new SqlConnection(_connectionString);
+        using var connection = new MySqlConnection(_connectionString);
         var results = await connection.QueryMultipleAsync(
-            sql: storedProcedure,
-            param: new { },
-            commandTimeout: _commandTimeout,
-            commandType: CommandType.StoredProcedure);
+            sql: sql,
+            commandTimeout: _commandTimeout);
 
         callback(results);
     }
