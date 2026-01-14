@@ -1,0 +1,40 @@
+.driver-calendar {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2rem;
+}
+
+.calendar-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.calendar-header-buttons {
+    margin-right: auto;
+    display: flex;
+    gap: 1rem;
+    width: 30rem;
+}
+
+.calendar-days {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-days span:first-child {
+    margin-left: 0.5rem;
+}
+
+.calendar-days span {
+    width: 1rem;
+    padding: 0;
+    display: inline-block;
+    line-height: 1rem;
+    margin-left: 2rem;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    writing-mode: vertical-rl;
+}

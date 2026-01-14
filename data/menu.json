@@ -1,0 +1,16 @@
+{
+   "data":[
+      {
+         "title":"Home",
+         "url":"/"
+      },
+      {
+         "title":"Vehicles",
+         "url":"/vehicles"
+      },
+      {
+         "title":"About",
+         "url":"/about"
+      }
+   ]
+}

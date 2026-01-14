@@ -1,0 +1,40 @@
+.driver-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.driver-header {
+    padding-right: 1rem;
+    width: 30rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.driver-header-name {
+    width: 10rem
+}
+
+.driver-header-vehicle {
+    width: 8rem
+}
+
+.week-activity {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.day-box {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    text-align: center;
+}
+
+.day-box.active {
+    background-color: #4caf50;
+    color: white;
+}

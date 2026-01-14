@@ -1,0 +1,12 @@
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\bin\Debug\net8.0\Core.SqlProvider.deps.json
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\bin\Debug\net8.0\Core.SqlProvider.dll
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\bin\Debug\net8.0\Core.SqlProvider.pdb
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\Core.SqlProvider.csproj.AssemblyReference.cache
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\Core.SqlProvider.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\Core.SqlProvider.AssemblyInfoInputs.cache
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\Core.SqlProvider.AssemblyInfo.cs
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\Core.SqlProvider.csproj.CoreCompileInputs.cache
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\Core.SqlProvider.dll
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\refint\Core.SqlProvider.dll
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\Core.SqlProvider.pdb
+C:\projects\programming-challenge\new\Challenge\Core.SqlProvider\obj\Debug\net8.0\ref\Core.SqlProvider.dll
