@@ -16,7 +16,7 @@ namespace Challenge.API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<DriverResponse>> Get(DateTime startDate, DateTime endDate)
-            => await _driverActivityService.GetDriverActivities(startDate, endDate);
+        public async Task<List<DriverResponse>> Get(DateTime startDate, DateTime endDate, string? search = null)
+            => await _driverActivityService.GetDriverActivities(startDate, endDate, search);
     }
 }

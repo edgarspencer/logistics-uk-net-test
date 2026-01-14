@@ -4,6 +4,6 @@ namespace Challenge.Services
 {
     public interface IDriverActivityService
     {
-        Task<List<DriverResponse>> GetDriverActivities(DateTime startDate, DateTime endDate);
+        Task<List<DriverResponse>> GetDriverActivities(DateTime startDate, DateTime endDate, string? search = null);
     }
 }

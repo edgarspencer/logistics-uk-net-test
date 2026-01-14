@@ -13,14 +13,28 @@ public class DriverActivityService : IDriverActivityService
         _repository = repository;
     }
 
-    public async Task<List<DriverResponse>> GetDriverActivities(DateTime startDate, DateTime endDate)
+    public async Task<List<DriverResponse>> GetDriverActivities(DateTime startDate, DateTime endDate, string? search = null)
     {
         var allDrivers = await _repository.GetAllDrivers();
         var activities = (await _repository.GetActivity())
             .Where(x => x.ActivityStartDate.Date >= startDate.Date && x.ActivityEndDate.Date <= endDate.Date)
             .ToList();
 
-        return MapActivitiesToDrivers(activities, allDrivers, startDate, endDate);
+        var result = MapActivitiesToDrivers(activities, allDrivers, startDate, endDate);
+
+        // Apply search filter if provided
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var searchLower = search.ToLower();
+            result = result.Where(d =>
+                d.FullName.ToLower().Contains(searchLower) ||
+                d.Forename.ToLower().Contains(searchLower) ||
+                d.Surname.ToLower().Contains(searchLower) ||
+                d.Shifts.Any(s => s.VehicleRegistration.ToLower().Contains(searchLower))
+            ).ToList();
+        }
+
+        return result;
     }
 
     private List<DriverResponse> MapActivitiesToDrivers(
