@@ -28,13 +28,75 @@
 
 .day-box {
     border: 1px solid #ccc;
-    padding: 0.5rem;
     width: 2rem;
     height: 2rem;
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-.day-box.active {
+/* Single color styles */
+.day-box.green {
     background-color: #4caf50;
-    color: white;
+}
+
+.day-box.yellow {
+    background-color: #ffeb3b;
+}
+
+.day-box.blue {
+    background-color: #2196f3;
+}
+
+.day-box.red {
+    background-color: #f44336;
+}
+
+/* Multi-color quarter styles */
+.day-box.multi-color {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    padding: 0;
+}
+
+.quarter {
+    width: 100%;
+    height: 100%;
+}
+
+.quarter.green {
+    background-color: #4caf50;
+}
+
+.quarter.yellow {
+    background-color: #ffeb3b;
+}
+
+.quarter.blue {
+    background-color: #2196f3;
+}
+
+.quarter.red {
+    background-color: #f44336;
+}
+
+.quarter.top-left {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.quarter.top-right {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.quarter.bottom-left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.quarter.bottom-right {
+    grid-column: 2;
+    grid-row: 2;
 }

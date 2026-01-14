@@ -1,4 +1,5 @@
 import type { DriverShiftResponse } from "./DriverShiftResponse";
+import type { DayStatusResponse } from "./DayStatusResponse";
 
 export interface DriverResponse {
     id: number;
@@ -6,4 +7,5 @@ export interface DriverResponse {
     surname: string;
     fullName: string;
     shifts: DriverShiftResponse[];
+    dayStatuses: DayStatusResponse[];
 }
