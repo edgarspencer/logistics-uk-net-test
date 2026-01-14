@@ -1,0 +1,75 @@
+.vehicles-page {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    width: 100%;
+    flex: 1;
+}
+
+.vehicles-page h1 {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.vehicles-content {
+    max-width: 800px;
+}
+
+.vehicles-content p {
+    font-size: 1rem;
+    color: #888;
+    text-align: center;
+    padding: 3rem 0;
+}
+
+/* Tablet Responsive */
+@media (max-width: 1024px) {
+    .vehicles-page {
+        padding: 1.5rem;
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .vehicles-page {
+        padding: 1.25rem;
+        border-radius: 12px;
+    }
+
+    .vehicles-page h1 {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .vehicles-content p {
+        font-size: 0.9rem;
+        padding: 2rem 0;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .vehicles-page {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .vehicles-content p {
+        font-size: 0.85rem;
+        padding: 1.5rem 0;
+    }
+}
+
+/* Very Small Mobile */
+@media (max-width: 360px) {
+    .vehicles-page {
+        padding: 0.75rem;
+    }
+
+    .vehicles-content p {
+        font-size: 0.8rem;
+        padding: 1.25rem 0;
+    }
+}

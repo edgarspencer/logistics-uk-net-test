@@ -45,11 +45,13 @@ function App() {
                         ))}
                     </ul>
                 </nav>
-                <Routes>
-                    <Route path="/about" element={<About />} />
-                    <Route path="/vehicles" element={<Vehicles />} />
-                    <Route path="/" element={<Home />} />
-                </Routes>
+                <main className="main-content">
+                    <Routes>
+                        <Route path="/about" element={<About />} />
+                        <Route path="/vehicles" element={<Vehicles />} />
+                        <Route path="/" element={<Home />} />
+                    </Routes>
+                </main>
             </div>
         </Router>
     )

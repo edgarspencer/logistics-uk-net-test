@@ -4,7 +4,11 @@ import type { DriverResponse } from "./Responses/DriverResponse";
 
 export const DriverService = {
     getDriverActivities: async (request: DriverActivityRequest) => {
-        const { data } = await ApiService.get<DriverResponse[]>(`/DriverActivities?startDate=${request.startDate}&endDate=${request.endDate}`);
+        let url = `/DriverActivities?startDate=${request.startDate}&endDate=${request.endDate}`;
+        if (request.search) {
+            url += `&search=${encodeURIComponent(request.search)}`;
+        }
+        const { data } = await ApiService.get<DriverResponse[]>(url);
         return data;
     }
 };
