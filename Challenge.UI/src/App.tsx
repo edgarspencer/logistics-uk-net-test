@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,22 +10,39 @@ import Home from './pages/Home/Home';
 import Vehicles from './pages/Vehicles/Vehicles';
 import About from './pages/About/About';
 
+interface MenuItem {
+    title: string;
+    url: string;
+}
+
 function App() {
+    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+    useEffect(() => {
+        fetch('/menu.json')
+            .then(response => response.json())
+            .then(data => setMenuItems(data.data))
+            .catch(() => {
+                // Fallback menu if fetch fails
+                setMenuItems([
+                    { title: 'Home', url: '/' },
+                    { title: 'Vehicles', url: '/vehicles' },
+                    { title: 'About', url: '/about' }
+                ]);
+            });
+    }, []);
+
     return (
         <Router>
             <div className="router-container">
                 <nav>
-                    <img src="./logo.png" alt="Company Logo" className="logo" />
+                    <img src="/logo.png" alt="Logistics UK Logo" className="logo" />
                     <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/about">About</Link>
-                        </li>
-                        <li>
-                            <Link to="/vehicles">Vehicles</Link>
-                        </li>
+                        {menuItems.map((item, index) => (
+                            <li key={index}>
+                                <Link to={item.url}>{item.title}</Link>
+                            </li>
+                        ))}
                     </ul>
                 </nav>
                 <Routes>

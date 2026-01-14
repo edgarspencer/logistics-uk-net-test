@@ -15,7 +15,7 @@ const Home = () => {
     return <div className='driver-calendar'>
         <div className='calendar-header'>
             <div className="calendar-header-buttons">
-                <button onClick={() => refetch(calendarDays)}>Refresh</button>
+                <button onClick={() => refetch(calendarDays)} disabled={isLoading}>Refresh</button>
             </div>
             <div className="calendar-days">
                 <span>Monday</span>
@@ -27,7 +27,11 @@ const Home = () => {
                 <span>Sunday</span>
             </div>
         </div>
-        {data?.map(driver => <DriverCalendarRow key={driver.id} driver={driver} />)}
+        {isLoading ? (
+            <div className="loading-state">Loading driver activities...</div>
+        ) : (
+            data?.map(driver => <DriverCalendarRow key={driver.id} driver={driver} />)
+        )}
     </div>
 };
 

@@ -15,6 +15,4 @@ public class DriverActivity
     public string VehicleRegistration { get; set; } = string.Empty;
 
     public DriverActivityType ActivityType { get; set; }
-
-    public bool BeenProcessed { get; set; }
 }

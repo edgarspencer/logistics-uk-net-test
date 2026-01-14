@@ -38,3 +38,10 @@
     font-weight: bold;
     writing-mode: vertical-rl;
 }
+
+.loading-state {
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+}
