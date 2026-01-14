@@ -45,6 +45,10 @@ msbuild.wrn
 ehthumbs.db
 Thumbs.db
 
+# Temp files
+*.tmp
+~*
+
 # dotnet
 *.dotCover
 project.lock.json
