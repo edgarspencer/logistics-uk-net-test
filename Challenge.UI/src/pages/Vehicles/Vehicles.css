@@ -4,7 +4,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     padding: 2rem;
     width: 100%;
-    min-height: calc(100vh - 3rem);
+    flex: 1;
 }
 
 .vehicles-page h1 {
@@ -35,7 +35,6 @@
 @media (max-width: 768px) {
     .vehicles-page {
         padding: 1.25rem;
-        min-height: auto;
         border-radius: 12px;
     }
 

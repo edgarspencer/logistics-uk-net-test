@@ -86,59 +86,61 @@ const Home = () => {
             </div>
 
             <div className="calendar-card">
-                {/* Desktop header */}
-                <div className="table-header desktop-only">
-                    <div className="header-info">
-                        <span className="col-name">Driver</span>
-                        <span className="col-vehicle">Vehicle</span>
-                        <span className="col-time">Time</span>
-                    </div>
-                    <div className="header-days">
-                        <span>Mon</span>
-                        <span>Tue</span>
-                        <span>Wed</span>
-                        <span>Thu</span>
-                        <span>Fri</span>
-                        <span>Sat</span>
-                        <span>Sun</span>
-                    </div>
-                </div>
-
-                {/* Mobile days header */}
-                <div className="days-row mobile-only">
-                    <span>M</span>
-                    <span>T</span>
-                    <span>W</span>
-                    <span>T</span>
-                    <span>F</span>
-                    <span>S</span>
-                    <span>S</span>
-                </div>
-
-                {/* Content */}
-                <div className="table-body">
-                    {isLoading ? (
-                        <div className="loading-state">
-                            <div className="spinner"></div>
-                            <p>Loading drivers...</p>
-                        </div>
-                    ) : data && data.length > 0 ? (
-                        <>
-                            <div className="results-count mobile-only">
-                                {data.length} driver{data.length !== 1 ? 's' : ''} found
+                <div className="table-scroll-container">
+                    <div className="table-inner">
+                        {/* Desktop header */}
+                        <div className="table-header desktop-only">
+                            <span className="col-name">Driver</span>
+                            <span className="col-vehicle">Vehicle</span>
+                            <span className="col-time">Time</span>
+                            <div className="col-days">
+                                <span className="col-day">Mon</span>
+                                <span className="col-day">Tue</span>
+                                <span className="col-day">Wed</span>
+                                <span className="col-day">Thu</span>
+                                <span className="col-day">Fri</span>
+                                <span className="col-day">Sat</span>
+                                <span className="col-day">Sun</span>
                             </div>
-                            {data.map(driver => <DriverCalendarRow key={driver.id} driver={driver} />)}
-                        </>
-                    ) : (
-                        <div className="empty-state">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                <circle cx="11" cy="11" r="8"/>
-                                <path d="M21 21l-4.35-4.35"/>
-                            </svg>
-                            <p>No drivers found</p>
-                            <span>Try adjusting your search</span>
                         </div>
-                    )}
+
+                        {/* Mobile days header */}
+                        <div className="days-row mobile-only">
+                            <span>M</span>
+                            <span>T</span>
+                            <span>W</span>
+                            <span>T</span>
+                            <span>F</span>
+                            <span>S</span>
+                            <span>S</span>
+                        </div>
+
+                        {/* Content */}
+                        <div className="table-body">
+                            {isLoading ? (
+                                <div className="loading-state">
+                                    <div className="spinner"></div>
+                                    <p>Loading drivers...</p>
+                                </div>
+                            ) : data && data.length > 0 ? (
+                                <>
+                                    <div className="results-count mobile-only">
+                                        {data.length} driver{data.length !== 1 ? 's' : ''} found
+                                    </div>
+                                    {data.map(driver => <DriverCalendarRow key={driver.id} driver={driver} />)}
+                                </>
+                            ) : (
+                                <div className="empty-state">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <path d="M21 21l-4.35-4.35"/>
+                                    </svg>
+                                    <p>No drivers found</p>
+                                    <span>Try adjusting your search</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

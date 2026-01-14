@@ -106,12 +106,10 @@ const DriverCalendarRow = ({ driver }: DriverCalendarRowProps) => {
 
     return (
         <div className="driver-row">
-            <div className="driver-info">
-                <span className="driver-name">{driver.fullName}</span>
-                <span className="driver-vehicle">{getVehicles()}</span>
-                <span className="driver-minutes">{calculateTotalDuration()} min</span>
-            </div>
-            <div className="week-activity">
+            <span className="driver-name">{driver.fullName}</span>
+            <span className="driver-vehicle">{getVehicles()}</span>
+            <span className="driver-minutes">{calculateTotalDuration()} min</span>
+            <div className="driver-days">
                 {daysOfWeek.map((_, dayIndex) => renderDayBox(dayIndex))}
             </div>
         </div>
