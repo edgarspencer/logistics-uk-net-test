@@ -1,0 +1,100 @@
+Bug Report - Challenge Application
+===================================
+
+Bug #1: Date Filter Excludes Boundary Dates
+-------------------------------------------
+Location: Challenge.Services/DriverActivityService.cs:19
+Problem: The date filter used strict inequality operators (> and <) instead of
+         inclusive operators (>= and <=). This caused activities on the start
+         date (01/02/2021) and end date (07/02/2021) to be excluded from results.
+Original: .Where(x => x.ActivityStartDate.Date > startDate.Date && x.ActivityEndDate.Date < endDate.Date)
+Fixed:    .Where(x => x.ActivityStartDate.Date >= startDate.Date && x.ActivityEndDate.Date <= endDate.Date)
+
+
+Bug #2: Incorrect Duration Calculation
+--------------------------------------
+Location: Challenge.Services/DriverActivityService.cs:85
+Problem: Duration was calculated by subtracting only the Minute property of the
+         timestamps, ignoring hour differences. For example, an activity from
+         09:00 to 10:30 would incorrectly show 30 minutes instead of 90 minutes.
+Original: DurationInMinutes = rawActivity.ActivityEndDate.Minute - rawActivity.ActivityStartDate.Minute
+Fixed:    DurationInMinutes = (int)(rawActivity.ActivityEndDate - rawActivity.ActivityStartDate).TotalMinutes
+
+
+Bug #3: Day of Week Calculation Off By One
+------------------------------------------
+Location: Challenge.UI/src/components/Drivers/DriverCalendarRow.tsx:17
+Problem: JavaScript's getDay() returns 0 for Sunday, 1 for Monday, etc. But the
+         code compared this directly against the array index where Monday is 0.
+         This caused activity days to be highlighted on the wrong day.
+Original: new Date(activity.startTime).getDay() === daysOfWeek.indexOf(day)
+Fixed:    Added conversion: jsDay === 0 ? 6 : jsDay - 1 to map Sunday(0) to 6,
+          Monday(1) to 0, etc.
+
+
+Bug #4: Drivers Without Activity Not Displayed
+----------------------------------------------
+Location: Challenge.Services/DriverActivityService.cs:26-44
+Problem: Only drivers with activities in the date range were returned. Drivers
+         without any activity were not shown in the calendar view.
+Fixed: Added GetAllDrivers() repository method and modified MapActivitiesToDrivers()
+       to include all drivers from the Driver table, showing empty shifts for
+       drivers with no activity.
+
+
+Bug #5: Menu Items Hardcoded Instead of Using menu.json
+-------------------------------------------------------
+Location: Challenge.UI/src/App.tsx
+Problem: Navigation menu items were hardcoded in the component instead of being
+         loaded from data/menu.json as specified in requirements.
+Fixed: Added useEffect hook to fetch menu items from /menu.json and render them
+       dynamically. Added fallback for error handling.
+
+
+Bug #6: Loading State Not Displayed
+-----------------------------------
+Location: Challenge.UI/src/pages/Home/Home.tsx
+Problem: The isLoading state was available from the useApi hook but was not used
+         in the UI. Users had no visual feedback when data was being loaded or
+         refreshed.
+Fixed: Added conditional rendering to show "Loading driver activities..." message
+       when isLoading is true, and disabled the Refresh button during loading.
+
+
+Bug #7: Logo Path Incorrect for Vite
+------------------------------------
+Location: Challenge.UI/src/App.tsx:17
+Problem: Logo src used relative path "./logo.png" which doesn't work correctly
+         with Vite's public folder. The logo would not display.
+Original: <img src="./logo.png" alt="Company Logo" className="logo" />
+Fixed:    <img src="/logo.png" alt="Logistics UK Logo" className="logo" />
+
+
+Bug #8: Cached Data Mutation Breaks Subsequent Requests
+-------------------------------------------------------
+Location: Challenge.Services/DriverActivityService.cs:46-98
+Problem: The BeenProcessed flag on DriverActivity objects was mutated during
+         shift mapping. Since the repository caches the activity list, these
+         mutations persisted across requests. On subsequent API calls, all
+         activities already had BeenProcessed=true, so no shifts were created
+         and drivers appeared to have no activity data.
+Fixed: Replaced the mutation-based approach with a HashSet<int> to track
+       processed activities by a computed key (DriverId + StartDate + Vehicle).
+       This avoids mutating the cached objects. Also removed the now-unused
+       BeenProcessed property from the DriverActivity model.
+
+
+Files Modified
+--------------
+Backend:
+- Challenge.Services/DriverActivityService.cs
+- Challenge.Repositories/DriverActivityRepository.cs
+- Challenge.Models/DriverActivity.cs (removed BeenProcessed property)
+- Challenge.Repositories/IDriverActivityRepository.cs
+
+Frontend:
+- Challenge.UI/src/App.tsx
+- Challenge.UI/src/pages/Home/Home.tsx
+- Challenge.UI/src/pages/Home/Home.css
+- Challenge.UI/src/components/Drivers/DriverCalendarRow.tsx
+- Challenge.UI/public/menu.json (copied from data/menu.json)

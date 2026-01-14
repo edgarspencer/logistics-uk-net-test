@@ -14,7 +14,14 @@ const DriverCalendarRow = ({ driver }: DriverCalendarRowProps) => {
     }
 
     const dayHasActivity = (day: string, shifts: DriverShiftResponse[]) => {
-        return shifts.some(shift => shift.activities.some(activity => new Date(activity.startTime).getDay() === daysOfWeek.indexOf(day)));
+        const dayIndex = daysOfWeek.indexOf(day);
+        // getDay() returns 0 for Sunday, 1 for Monday, etc.
+        // Convert to Monday=0, Tuesday=1, ..., Sunday=6
+        return shifts.some(shift => shift.activities.some(activity => {
+            const jsDay = new Date(activity.startTime).getDay();
+            const adjustedDay = jsDay === 0 ? 6 : jsDay - 1; // Convert Sunday=0 to 6, Monday=1 to 0, etc.
+            return adjustedDay === dayIndex;
+        }));
     }
 
     return (

@@ -15,64 +15,83 @@ public class DriverActivityService : IDriverActivityService
 
     public async Task<List<DriverResponse>> GetDriverActivities(DateTime startDate, DateTime endDate)
     {
+        var allDrivers = await _repository.GetAllDrivers();
         var activities = (await _repository.GetActivity())
-            .Where(x => x.ActivityStartDate.Date > startDate.Date && x.ActivityEndDate.Date < endDate.Date)
+            .Where(x => x.ActivityStartDate.Date >= startDate.Date && x.ActivityEndDate.Date <= endDate.Date)
             .ToList();
 
-        return MapActivitiesToDrivers(activities);
+        return MapActivitiesToDrivers(activities, allDrivers);
     }
 
-    private List<DriverResponse> MapActivitiesToDrivers(List<DriverActivity> rawActivites)
-        => rawActivites.GroupBy(x => x.DriverId)
-            .Select(g => new DriverResponse
+    private List<DriverResponse> MapActivitiesToDrivers(
+        List<DriverActivity> rawActivites,
+        List<(int DriverId, string Forename, string Surname)> allDrivers)
+    {
+        var activityByDriver = rawActivites.GroupBy(x => x.DriverId).ToDictionary(g => g.Key, g => g.ToList());
+
+        return allDrivers
+            .Select(driver => new DriverResponse
             {
-                Id = g.Key,
-                Forename = g.First().Forename,
-                Surname = g.First().Surname,
-                Shifts = MapActivitiesToShiftsForDriver(g.ToList())
+                Id = driver.DriverId,
+                Forename = driver.Forename,
+                Surname = driver.Surname,
+                Shifts = activityByDriver.ContainsKey(driver.DriverId)
+                    ? MapActivitiesToShiftsForDriver(activityByDriver[driver.DriverId])
+                    : new List<DriverShiftResponse>()
             })
             .OrderBy(d => d.FullName)
             .ToList();
+    }
 
     private List<DriverShiftResponse> MapActivitiesToShiftsForDriver(List<DriverActivity> rawActivites)
     {
         var shifts = new List<DriverShiftResponse>();
+        var processedIds = new HashSet<int>();
 
-        while (rawActivites.Any(x => !x.BeenProcessed))
+        var orderedActivities = rawActivites.OrderBy(x => x.ActivityStartDate).ToList();
+
+        foreach (var activity in orderedActivities)
         {
-            var startingActivity = rawActivites
-                .Where(x => !x.BeenProcessed)
-                .OrderBy(x => x.ActivityStartDate)
-                .First();
+            if (processedIds.Contains(GetActivityKey(activity)))
+                continue;
 
-            startingActivity.BeenProcessed = true;
+            processedIds.Add(GetActivityKey(activity));
 
             shifts.Add(new DriverShiftResponse
             {
-                VehicleRegistration = startingActivity.VehicleRegistration.ToUpper(),
-                Activities = GetAllActiviesInShift(startingActivity, rawActivites)
+                VehicleRegistration = activity.VehicleRegistration.ToUpper(),
+                Activities = GetAllActiviesInShift(activity, rawActivites, processedIds)
             });
         }
 
         return shifts;
     }
 
-    private List<DriverActivityResponse> GetAllActiviesInShift(DriverActivity startingActivity, List<DriverActivity> rawActivities)
+    private int GetActivityKey(DriverActivity activity) =>
+        HashCode.Combine(activity.DriverId, activity.ActivityStartDate, activity.VehicleRegistration);
+
+    private List<DriverActivityResponse> GetAllActiviesInShift(
+        DriverActivity startingActivity,
+        List<DriverActivity> rawActivities,
+        HashSet<int> processedIds)
     {
-        var previousActivity = startingActivity;
         var result = new List<DriverActivityResponse> { MapActivity(startingActivity) };
+        var previousActivity = startingActivity;
 
         while (previousActivity != null)
         {
-            previousActivity = rawActivities.FirstOrDefault(x => !x.BeenProcessed &&
+            var nextActivity = rawActivities.FirstOrDefault(x =>
+                !processedIds.Contains(GetActivityKey(x)) &&
                 x.VehicleRegistration == previousActivity.VehicleRegistration &&
                 x.ActivityStartDate == previousActivity.ActivityEndDate);
 
-            if (previousActivity != null)
+            if (nextActivity != null)
             {
-                previousActivity.BeenProcessed = true;
-                result.Add(MapActivity(previousActivity));
+                processedIds.Add(GetActivityKey(nextActivity));
+                result.Add(MapActivity(nextActivity));
             }
+
+            previousActivity = nextActivity;
         }
 
         return result;
@@ -82,6 +101,6 @@ public class DriverActivityService : IDriverActivityService
     {
         Type = rawActivity.ActivityType,
         StartTime = rawActivity.ActivityStartDate,
-        DurationInMinutes = rawActivity.ActivityEndDate.Minute - rawActivity.ActivityStartDate.Minute
+        DurationInMinutes = (int)(rawActivity.ActivityEndDate - rawActivity.ActivityStartDate).TotalMinutes
     };
 }
