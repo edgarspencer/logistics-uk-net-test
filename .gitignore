@@ -12,6 +12,11 @@ msbuild.log
 msbuild.err
 msbuild.wrn
 
+# SQL Server Database Project
+*.dbmdl
+*.jfm
+*.refactorlog
+
 # Visual Studio
 .vs/
 *.user
