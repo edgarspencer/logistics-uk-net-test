@@ -1,6 +1,6 @@
 CREATE TABLE Driver_Trace
 (
-    Driver_Trace_ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Driver_Trace_ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Driver_ID INT NOT NULL,
     Vehicle_Registration VARCHAR(15) NOT NULL,
     Activity_Start_Date DATETIME NOT NULL,
