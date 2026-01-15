@@ -1,6 +1,0 @@
-CREATE TABLE Driver
-(
-    Driver_ID INT NOT NULL PRIMARY KEY,
-    Surname VARCHAR(50) NOT NULL,
-    Forename VARCHAR(50) NOT NULL
-);

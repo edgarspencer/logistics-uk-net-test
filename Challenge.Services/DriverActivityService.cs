@@ -15,8 +15,15 @@ public class DriverActivityService : IDriverActivityService
 
     public async Task<List<DriverResponse>> GetDriverActivities(DateTime startDate, DateTime endDate, string? search = null)
     {
-        var allDrivers = await _repository.GetAllDrivers();
-        var activities = (await _repository.GetActivity())
+        var allActivities = await _repository.GetActivity();
+
+        // Extract unique drivers from activities
+        var allDrivers = allActivities
+            .GroupBy(a => a.DriverId)
+            .Select(g => (g.Key, g.First().Forename, g.First().Surname))
+            .ToList();
+
+        var activities = allActivities
             .Where(x => x.ActivityStartDate.Date >= startDate.Date && x.ActivityEndDate.Date <= endDate.Date)
             .ToList();
 

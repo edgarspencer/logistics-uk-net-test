@@ -5,11 +5,10 @@ A full-stack application for tracking and visualizing driver activities, shifts,
 ## Tech Stack
 
 ### Backend
-- **.NET 10** (C#)
+- **.NET 8.0** (C#)
 - **ASP.NET Core Web API**
 - **Dapper** (micro-ORM)
 - **SQL Server** (via Microsoft.Data.SqlClient)
-- **DbUp** (database migrations)
 
 ### Frontend
 - **React 19** with TypeScript
@@ -22,7 +21,10 @@ A full-stack application for tracking and visualizing driver activities, shifts,
 ```
 logisticsuk/
 ├── Challenge.API/           # ASP.NET Core Web API
-├── Challenge.Database/      # Database migrations and seeding
+├── Challenge.Database/      # Database setup scripts
+│   ├── Initial_Setup.sql    # Complete database setup (tables, procedures, seed data)
+│   ├── Tables/              # Individual table definitions
+│   └── StoredProcedures/    # Stored procedure definitions
 ├── Challenge.Models/        # Shared data models
 ├── Challenge.Repositories/  # Data access layer
 ├── Challenge.Services/      # Business logic layer
@@ -32,7 +34,7 @@ logisticsuk/
 
 ## Prerequisites
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
 - [Node.js 18+](https://nodejs.org/) (for frontend)
 - [SQL Server](https://www.microsoft.com/sql-server) or [SQL Server Docker image](https://hub.docker.com/_/microsoft-mssql-server)
 
@@ -40,37 +42,43 @@ logisticsuk/
 
 ### 1. Database Setup
 
-#### SQL Server (Docker)
+#### Start SQL Server (Docker)
 
-1. Start SQL Server in Docker:
-   ```bash
-   docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=YourStrong!Passw0rd" \
-     -p 1433:1433 --name sqlserver \
-     -d mcr.microsoft.com/mssql/server:2022-latest
+```bash
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=YourStrong!Passw0rd" \
+  -p 1433:1433 --name sqlserver \
+  -d mcr.microsoft.com/mssql/server:2022-latest
+```
+
+Default credentials:
+- **Host:** 127.0.0.1
+- **Port:** 1433
+- **User:** sa
+- **Password:** YourStrong!Passw0rd
+
+#### Create Database and Run Initial Setup
+
+1. Connect to SQL Server and create the database:
+   ```sql
+   CREATE DATABASE logisticsuk;
    ```
 
-2. The default connection string is configured for:
-   - **Host:** 127.0.0.1
-   - **Port:** 1433
-   - **User:** sa
-   - **Password:** YourStrong!Passw0rd
-
-3. Run database migrations and seed data:
+2. Run the initial setup script to create tables, stored procedures, and seed data:
    ```bash
-   cd Challenge.Database
-   dotnet run
+   # Using sqlcmd
+   sqlcmd -S 127.0.0.1,1433 -U sa -P "YourStrong!Passw0rd" -d logisticsuk -i Challenge.Database/Initial_Setup.sql
    ```
 
-   Or with a custom connection string:
-   ```bash
-   dotnet run "Server=127.0.0.1,1433;Database=logisticsuk;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
-   ```
+   Or using Azure Data Studio / SQL Server Management Studio:
+   - Connect to `127.0.0.1,1433` with user `sa`
+   - Open `Challenge.Database/Initial_Setup.sql`
+   - Execute the script against the `logisticsuk` database
 
-   Or via environment variable:
-   ```bash
-   export ConnectionStrings__DefaultConnection="Server=127.0.0.1,1433;Database=logisticsuk;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
-   dotnet run
-   ```
+The `Initial_Setup.sql` script will:
+- Create the `Driver` table
+- Create the `Driver_Trace` table
+- Create the `stp_Get_Driver_Activity` stored procedure
+- Insert seed data for 10 drivers with activity records
 
 ### 2. Backend Setup
 
@@ -103,12 +111,6 @@ The frontend will start at `http://localhost:5173`.
 | `dotnet run` | Run the API |
 | `dotnet watch run` | Run with hot reload |
 
-### Database
-
-| Command | Description |
-|---------|-------------|
-| `cd Challenge.Database && dotnet run` | Run migrations and seed data |
-
 ### Frontend
 
 | Command | Description |
@@ -119,17 +121,35 @@ The frontend will start at `http://localhost:5173`.
 | `npm run preview` | Preview production build |
 | `npm run lint` | Run ESLint |
 
-## Database Migrations
+## Database Schema
 
-The application uses [DbUp](https://dbup.readthedocs.io/) for database migrations. Scripts are located in `Challenge.Database/Scripts/` and run in alphabetical order:
+### Tables
 
-| Script | Description |
-|--------|-------------|
-| `001_CreateDriverTable.sql` | Creates the Driver table |
-| `002_CreateDriverTraceTable.sql` | Creates the Driver_Trace table |
-| `004_SeedData.sql` | Seeds initial driver and activity data |
+#### Driver
+| Column | Type | Description |
+|--------|------|-------------|
+| Driver_ID | INT | Primary key |
+| Surname | NVARCHAR(50) | Driver's surname |
+| Forename | NVARCHAR(50) | Driver's forename |
 
-DbUp tracks which scripts have been executed in the `SchemaVersions` table.
+#### Driver_Trace
+| Column | Type | Description |
+|--------|------|-------------|
+| Driver_Trace_ID | INT IDENTITY | Primary key (auto-increment) |
+| Driver_ID | INT | Foreign key to Driver |
+| Vehicle_Registration | NVARCHAR(15) | Vehicle registration number |
+| Activity_Start_Date | DATETIME2 | Activity start timestamp |
+| Activity_End_Date | DATETIME2 | Activity end timestamp |
+| Activity_Type | NVARCHAR(10) | Type: drive, rest, work, available |
+
+### Stored Procedures
+
+#### stp_Get_Driver_Activity
+Returns all driver activities joined with driver information. Used by the API to fetch driver activity data.
+
+```sql
+EXEC stp_Get_Driver_Activity
+```
 
 ## Configuration
 
@@ -145,16 +165,6 @@ DbUp tracks which scripts have been executed in the `SchemaVersions` table.
       "Default": "Information",
       "Microsoft.AspNetCore": "Warning"
     }
-  }
-}
-```
-
-### Database Migration Configuration (`Challenge.Database/appsettings.json`)
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=127.0.0.1,1433;Database=logisticsuk;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
   }
 }
 ```
@@ -211,12 +221,19 @@ GET /api/drivers/activities?startDate=2021-02-01&endDate=2021-02-07&search=smith
 
 4. Ensure `TrustServerCertificate=True` is set for local development
 
-### Migration Errors
+### Verify Database Setup
 
-1. Check if `SchemaVersions` table exists
-2. Verify SQL script syntax
-3. Run with verbose logging: scripts output to console
-4. Check SQL Server logs: `docker logs sqlserver`
+```bash
+sqlcmd -S 127.0.0.1,1433 -U sa -P "YourStrong!Passw0rd" -d logisticsuk -Q "SELECT COUNT(*) FROM Driver; SELECT COUNT(*) FROM Driver_Trace;"
+```
+
+Expected output: 10 drivers, 300+ driver trace records.
+
+### Test Stored Procedure
+
+```bash
+sqlcmd -S 127.0.0.1,1433 -U sa -P "YourStrong!Passw0rd" -d logisticsuk -Q "EXEC stp_Get_Driver_Activity"
+```
 
 ### Frontend Build Errors
 

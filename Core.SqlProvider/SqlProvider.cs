@@ -22,6 +22,18 @@ public class SqlProvider : ISqlProvider
         return await connection.QueryAsync<TReturnedDataModel>(sql, commandTimeout: _commandTimeout);
     }
 
+    public async Task<IEnumerable<TReturnedDataModel>> ExecuteStoredProcedure<TReturnedDataModel>(
+        string storedProcedure,
+        object? parameters = null)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        return await connection.QueryAsync<TReturnedDataModel>(
+            storedProcedure,
+            parameters,
+            commandType: CommandType.StoredProcedure,
+            commandTimeout: _commandTimeout);
+    }
+
     public async Task QueryMultipleDataSets(
         string sql,
         Action<SqlMapper.GridReader> callback)
