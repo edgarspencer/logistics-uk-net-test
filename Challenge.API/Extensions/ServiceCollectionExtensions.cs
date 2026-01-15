@@ -21,7 +21,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddMemoryCache();
 
-        services.AddScoped<ISqlProvider>(s => new SqlProvider(config.GetConnectionString("SqlConnection"), dbTimeout));
+        var connectionString = config.GetConnectionString("SqlConnection")
+            ?? throw new InvalidOperationException("Connection string 'SqlConnection' not found.");
+        services.AddScoped<ISqlProvider>(s => new SqlProvider(connectionString, dbTimeout));
         
         services.AddScoped<IDriverActivityRepository, DriverActivityRepository>();
     }
