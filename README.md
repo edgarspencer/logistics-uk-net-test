@@ -5,7 +5,7 @@ A full-stack application for tracking and visualizing driver activities, shifts,
 ## Tech Stack
 
 ### Backend
-- **.NET 10** (C#)
+- **.NET 8.0** (C#)
 - **ASP.NET Core Web API**
 - **Dapper** (micro-ORM)
 - **SQL Server** (via Microsoft.Data.SqlClient)
@@ -34,7 +34,7 @@ logisticsuk/
 
 ## Prerequisites
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
 - [Node.js 18+](https://nodejs.org/) (for frontend)
 - [SQL Server](https://www.microsoft.com/sql-server) or [SQL Server Docker image](https://hub.docker.com/_/microsoft-mssql-server)
 

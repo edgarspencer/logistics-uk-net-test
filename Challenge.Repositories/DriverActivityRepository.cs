@@ -30,17 +30,4 @@ public class DriverActivityRepository : IDriverActivityRepository
         return activities;
     }
 
-    public async Task<List<(int DriverId, string Forename, string Surname)>> GetAllDrivers()
-    {
-        var sql = "SELECT Driver_ID, Forename, Surname FROM Driver";
-        var drivers = await _sqlProvider.QueryData<DriverRecord>(sql);
-        return drivers.Select(d => (d.DriverId, d.Forename, d.Surname)).ToList();
-    }
-
-    private class DriverRecord
-    {
-        public int DriverId { get; set; }
-        public string Forename { get; set; } = string.Empty;
-        public string Surname { get; set; } = string.Empty;
-    }
 }
