@@ -1,4 +1,4 @@
-﻿using Challenge.Models;
+using Challenge.Models;
 using Microsoft.Extensions.Caching.Memory;
 using SqlInterface;
 
@@ -7,7 +7,7 @@ namespace Challenge.Repositories;
 public class DriverActivityRepository : IDriverActivityRepository
 {
     private readonly IMemoryCache _cache;
-    private const string _cacheKey = "DriverActivities";
+    private const string _cacheKey = "DriversAndActivities";
 
     private readonly ISqlProvider _sqlProvider;
 
@@ -17,17 +17,25 @@ public class DriverActivityRepository : IDriverActivityRepository
         _sqlProvider = sqlProvider;
     }
 
-    public async Task<List<DriverActivity>> GetActivity()
+    public async Task<(List<Driver> Drivers, List<DriverActivity> Activities)> GetDriversAndActivities()
     {
-        if (_cache.TryGetValue(_cacheKey, out List<DriverActivity> activities))
+        if (_cache.TryGetValue(_cacheKey, out (List<Driver> Drivers, List<DriverActivity> Activities) cached))
         {
-            return activities;
+            return cached;
         }
 
-        activities = (await _sqlProvider.ExecuteStoredProcedure<DriverActivity>("stp_Get_Driver_Activity")).ToList();
-        _cache.Set(_cacheKey, activities, TimeSpan.FromHours(1));
+        List<Driver> drivers = null!;
+        List<DriverActivity> activities = null!;
 
-        return activities;
+        await _sqlProvider.ExecuteStoredProcedureMultiple("stp_Get_Driver_Activity", reader =>
+        {
+            drivers = reader.Read<Driver>().ToList();
+            activities = reader.Read<DriverActivity>().ToList();
+        });
+
+        var result = (drivers, activities);
+        _cache.Set(_cacheKey, result, TimeSpan.FromHours(1));
+
+        return result;
     }
-
 }

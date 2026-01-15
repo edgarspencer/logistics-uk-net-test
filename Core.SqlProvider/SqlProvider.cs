@@ -45,4 +45,19 @@ public class SqlProvider : ISqlProvider
 
         callback(results);
     }
+
+    public async Task ExecuteStoredProcedureMultiple(
+        string storedProcedure,
+        Action<SqlMapper.GridReader> callback,
+        object? parameters = null)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        var results = await connection.QueryMultipleAsync(
+            sql: storedProcedure,
+            param: parameters,
+            commandType: CommandType.StoredProcedure,
+            commandTimeout: _commandTimeout);
+
+        callback(results);
+    }
 }
