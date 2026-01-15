@@ -1,6 +1,6 @@
 using Dapper;
 using System.Data;
-using MySqlConnector;
+using Microsoft.Data.SqlClient;
 
 namespace SqlInterface;
 
@@ -18,7 +18,7 @@ public class SqlProvider : ISqlProvider
 
     public async Task<IEnumerable<TReturnedDataModel>> QueryData<TReturnedDataModel>(string sql)
     {
-        using var connection = new MySqlConnection(_connectionString);
+        using var connection = new SqlConnection(_connectionString);
         return await connection.QueryAsync<TReturnedDataModel>(sql, commandTimeout: _commandTimeout);
     }
 
@@ -26,7 +26,7 @@ public class SqlProvider : ISqlProvider
         string sql,
         Action<SqlMapper.GridReader> callback)
     {
-        using var connection = new MySqlConnection(_connectionString);
+        using var connection = new SqlConnection(_connectionString);
         var results = await connection.QueryMultipleAsync(
             sql: sql,
             commandTimeout: _commandTimeout);
