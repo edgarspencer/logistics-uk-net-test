@@ -34,12 +34,14 @@ Fixed:    Added conversion: jsDay === 0 ? 6 : jsDay - 1 to map Sunday(0) to 6,
 
 Bug #4: Drivers Without Activity Not Displayed
 ----------------------------------------------
-Location: Challenge.Services/DriverActivityService.cs:26-44
-Problem: Only drivers with activities in the date range were returned. Drivers
-         without any activity were not shown in the calendar view.
-Fixed: Added GetAllDrivers() repository method and modified MapActivitiesToDrivers()
-       to include all drivers from the Driver table, showing empty shifts for
-       drivers with no activity.
+Location: Challenge.Database/StoredProcedures/stp_Get_Driver_Activity.sql
+Problem: The stored procedure used INNER JOIN between Driver and Driver_Trace
+         tables, which excluded drivers without any activity records (e.g.,
+         Sidney Leach). These drivers were not shown in the calendar view.
+Original: FROM dbo.Driver D INNER JOIN dbo.Driver_Trace DT ON D.Driver_ID = DT.Driver_ID
+Fixed:    FROM dbo.Driver D LEFT JOIN dbo.Driver_Trace DT ON D.Driver_ID = DT.Driver_ID
+         Changed to LEFT JOIN so all drivers are returned, with NULL activity
+         columns for drivers without trace records.
 
 
 Bug #5: Menu Items Hardcoded Instead of Using menu.json
@@ -91,6 +93,8 @@ Backend:
 - Challenge.Repositories/DriverActivityRepository.cs
 - Challenge.Models/DriverActivity.cs (removed BeenProcessed property)
 - Challenge.Repositories/IDriverActivityRepository.cs
+- Challenge.Database/StoredProcedures/stp_Get_Driver_Activity.sql (INNER JOIN -> LEFT JOIN)
+- Challenge.Database/Initial_Setup.sql (INNER JOIN -> LEFT JOIN)
 
 Frontend:
 - Challenge.UI/src/App.tsx
