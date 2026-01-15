@@ -45,7 +45,7 @@ BEGIN
 		DT.Vehicle_Registration,
 		DT.Activity_Type
 	FROM dbo.Driver D
-	INNER JOIN dbo.Driver_Trace DT ON D.Driver_ID = DT.Driver_ID
+	LEFT JOIN dbo.Driver_Trace DT ON D.Driver_ID = DT.Driver_ID
 END;
 
 GO
