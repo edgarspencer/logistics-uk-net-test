@@ -4,15 +4,20 @@ BEGIN
 
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 	SET NOCOUNT ON;
-	
+
+	-- Result set 1: All drivers
 	SELECT
-		D.Driver_ID,
-		D.Surname,
-		D.Forename,
-		DT.Activity_Start_Date,
-		DT.Activity_End_Date,
-		DT.Vehicle_Registration,
-		DT.Activity_Type
-	FROM dbo.Driver D
-	LEFT JOIN dbo.Driver_Trace DT ON D.Driver_ID = DT.Driver_ID
+		Driver_ID,
+		Surname,
+		Forename
+	FROM dbo.Driver;
+
+	-- Result set 2: All activities
+	SELECT
+		Driver_ID,
+		Activity_Start_Date,
+		Activity_End_Date,
+		Vehicle_Registration,
+		Activity_Type
+	FROM dbo.Driver_Trace;
 END;

@@ -1,12 +1,8 @@
-﻿namespace Challenge.Models;
+namespace Challenge.Models;
 
 public class DriverActivity
 {
     public int DriverId { get; set; }
-
-    public required string Forename { get; set; }
-
-    public required string Surname { get; set; }
 
     public DateTime ActivityStartDate { get; set; }
 

@@ -38,10 +38,14 @@ Location: Challenge.Database/StoredProcedures/stp_Get_Driver_Activity.sql
 Problem: The stored procedure used INNER JOIN between Driver and Driver_Trace
          tables, which excluded drivers without any activity records (e.g.,
          Sidney Leach). These drivers were not shown in the calendar view.
-Original: FROM dbo.Driver D INNER JOIN dbo.Driver_Trace DT ON D.Driver_ID = DT.Driver_ID
-Fixed:    FROM dbo.Driver D LEFT JOIN dbo.Driver_Trace DT ON D.Driver_ID = DT.Driver_ID
-         Changed to LEFT JOIN so all drivers are returned, with NULL activity
-         columns for drivers without trace records.
+Fixed:   Refactored to use SqlProvider's QueryMultipleDataSets capability.
+         The stored procedure now returns two separate result sets:
+         1. All drivers (SELECT from Driver table)
+         2. All activities (SELECT from Driver_Trace table)
+         This approach uses the tip about SqlProvider having a method for
+         reaching multiple data sets. Created new Driver model, updated
+         repository to use ExecuteStoredProcedureMultiple, and service
+         now receives drivers and activities as separate lists.
 
 
 Bug #5: Menu Items Hardcoded Instead of Using menu.json
@@ -91,10 +95,13 @@ Files Modified
 Backend:
 - Challenge.Services/DriverActivityService.cs
 - Challenge.Repositories/DriverActivityRepository.cs
-- Challenge.Models/DriverActivity.cs (removed BeenProcessed property)
+- Challenge.Models/DriverActivity.cs (removed BeenProcessed property, Forename, Surname)
+- Challenge.Models/Driver.cs (new - separate model for driver data)
 - Challenge.Repositories/IDriverActivityRepository.cs
-- Challenge.Database/StoredProcedures/stp_Get_Driver_Activity.sql (INNER JOIN -> LEFT JOIN)
-- Challenge.Database/Initial_Setup.sql (INNER JOIN -> LEFT JOIN)
+- Core.SqlProvider/ISqlProvider.cs (added ExecuteStoredProcedureMultiple)
+- Core.SqlProvider/SqlProvider.cs (implemented ExecuteStoredProcedureMultiple)
+- Challenge.Database/StoredProcedures/stp_Get_Driver_Activity.sql (two result sets)
+- Challenge.Database/Initial_Setup.sql (two result sets)
 
 Frontend:
 - Challenge.UI/src/App.tsx

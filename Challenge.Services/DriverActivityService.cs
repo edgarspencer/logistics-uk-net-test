@@ -15,13 +15,7 @@ public class DriverActivityService : IDriverActivityService
 
     public async Task<List<DriverResponse>> GetDriverActivities(DateTime startDate, DateTime endDate, string? search = null)
     {
-        var allActivities = await _repository.GetActivity();
-
-        // Extract unique drivers from activities
-        var allDrivers = allActivities
-            .GroupBy(a => a.DriverId)
-            .Select(g => (g.Key, g.First().Forename, g.First().Surname))
-            .ToList();
+        var (allDrivers, allActivities) = await _repository.GetDriversAndActivities();
 
         var activities = allActivities
             .Where(x => x.ActivityStartDate.Date >= startDate.Date && x.ActivityEndDate.Date <= endDate.Date)
@@ -46,7 +40,7 @@ public class DriverActivityService : IDriverActivityService
 
     private List<DriverResponse> MapActivitiesToDrivers(
         List<DriverActivity> rawActivites,
-        List<(int DriverId, string Forename, string Surname)> allDrivers,
+        List<Driver> allDrivers,
         DateTime startDate,
         DateTime endDate)
     {

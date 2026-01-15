@@ -1,9 +1,9 @@
-﻿using Challenge.Models;
+using Challenge.Models;
 
 namespace Challenge.Repositories
 {
     public interface IDriverActivityRepository
     {
-        Task<List<DriverActivity>> GetActivity();
+        Task<(List<Driver> Drivers, List<DriverActivity> Activities)> GetDriversAndActivities();
     }
 }
